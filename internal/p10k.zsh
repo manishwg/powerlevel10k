@@ -5236,7 +5236,7 @@ function _p9k_taskwarrior_init_data() {
 
   local name val
   for name in PENDING OVERDUE; do
-    val="$(command task +$name count rc.color=0 rc._forcecolor=0 </dev/null 2>/dev/null)" || continue
+    val="$(command task project:$TASK_DEF_PROJECT +$name count rc.color=0 rc._forcecolor=0 </dev/null 2>/dev/null)" || continue
     [[ $val == <1-> ]] || continue
     _p9k_taskwarrior_counters[$name]=$val
   done
@@ -5245,7 +5245,7 @@ function _p9k_taskwarrior_init_data() {
 
   if (( _p9k_taskwarrior_counters[PENDING] > _p9k_taskwarrior_counters[OVERDUE] )); then
     local -a ts
-    ts=($(command task +PENDING -OVERDUE list rc.verbose=nothing rc.color=0 rc._forcecolor=0 \
+    ts=($(command task project:$TASK_DEF_PROJECT +PENDING -OVERDUE list rc.verbose=nothing rc.color=0 rc._forcecolor=0 \
       rc.report.list.labels= rc.report.list.columns=due.epoch </dev/null 2>/dev/null)) || ts=()
     if (( $#ts )); then
       _p9k_taskwarrior_next_due=${${(on)ts}[1]}
